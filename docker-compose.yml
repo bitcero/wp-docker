@@ -1,0 +1,37 @@
+version: "3.9"
+services:
+  web:
+    image: wordpress
+    links:
+      - mysql
+    environment:
+      - WORDPRESS_DB_PASSWORD=wordpress
+      - WORDPRESS_DB_USER=wordpress
+      - WORDPRESS_DB_NAME=wordpress_local
+      - WORDPRESS_TABLE_PREFIX=wpl_
+      - WORDPRESS_DEBUG=true
+      - WORDPRESS_DEBUG_LOG=true
+      - WORDPRESS_DEBUG_DISPLAY=false
+    ports:
+      - '80:80'
+    volumes:
+      - ../wordpress:/var/www/html
+      - ./wordpress.ini:/usr/local/etc/php/conf.d/wordpress.ini 
+  mysql:
+    image: mysql:5.7.42
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=wordpress_local
+    volumes:
+      - ../data:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    links:
+      - mysql
+    ports:
+      - '8080:80'
+    environment:
+      - PMA_HOST=mysql
+      - PMA_USER=root
+      - PMA_PASSWORD=root
+
